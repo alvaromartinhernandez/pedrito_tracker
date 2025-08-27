@@ -11,7 +11,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         PedritoCountSensor(manager, EVENT_TYPE_PIS, "Pises últimos 2 días", "pises"),
         PedritoLastSensor(manager, EVENT_TYPE_CACA, "Última caca"),
         PedritoLastSensor(manager, EVENT_TYPE_PIS, "Último pis"),
-        PedritoHistorialSensor(hass),  # 👈 añadimos este
+        PedritoHistorialSensor(manager),  # 👈 Cambiado para usar el manager
     ]
 
     async_add_entities(sensors, True)
@@ -61,13 +61,12 @@ class PedritoLastSensor(SensorEntity):
     def native_value(self):
         return self._state
 
-
-
 class PedritoHistorialSensor(Entity):
-    def __init__(self, hass):
-        self._hass = hass
+    def __init__(self, manager):
+        self.manager = manager
         self._attr_name = "Pedrito Historial"
-        self._state = None
+        self._attr_unique_id = "pedrito_historial"
+        self._state = "No hay eventos"
         self._attr_extra_state_attributes = {"eventos": []}
 
     @property
@@ -79,8 +78,15 @@ class PedritoHistorialSensor(Entity):
         return self._attr_extra_state_attributes
 
     async def async_update(self):
-        events = self._hass.data.get("pedrito_tracker_events", [])
+        events = self.manager.get_events()
         if events:
-            ultimo = events[-1]
-            self._state = f"{ultimo['tipo']} {ultimo['timestamp']}"
-        self._attr_extra_state_attributes = {"eventos": events}
+            # Ordenar eventos por timestamp (más reciente primero)
+            sorted_events = sorted(events, key=lambda x: x["timestamp"], reverse=True)
+            self._attr_extra_state_attributes = {"eventos": sorted_events}
+            
+            # Establecer el estado con el último evento
+            last_event = sorted_events[0]
+            self._state = f"{last_event['type']} {last_event['timestamp']}"
+        else:
+            self._state = "No hay eventos"
+            self._attr_extra_state_attributes = {"eventos": []}
