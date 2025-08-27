@@ -1,0 +1,6 @@
+add_caca:
+  name: Añadir caca
+  description: Añade un evento de caca para Pedrito.
+add_pis:
+  name: Añadir pis
+  description: Añade un evento de pis para Pedrito.

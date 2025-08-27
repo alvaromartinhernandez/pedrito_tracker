@@ -1,0 +1,7 @@
+DOMAIN = "pedrito_tracker"
+STORAGE_KEY = DOMAIN
+STORAGE_VERSION = 1
+
+EVENT_TYPE_CACA = "caca"
+EVENT_TYPE_PIS = "pis"
+MAX_DAYS = 7

@@ -1,0 +1,10 @@
+{
+  "domain": "pedrito_tracker",
+  "name": "Pedrito Tracker",
+  "version": "1.0.0",
+  "documentation": "https://example.com",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@tu_usuario_github"],
+  "config_flow": true
+}
